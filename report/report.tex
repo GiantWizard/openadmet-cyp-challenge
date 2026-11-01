@@ -59,6 +59,7 @@
 \@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
 \makeatother
 \hypersetup{
+  pdfauthor={Jeffery Chen (entry GiantWizard)},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
@@ -78,33 +79,165 @@ OpenADMET CYP Inhibition Blind Challenge, direct-inhibition (regression)
 and time-dependent-inhibition (classification) tracks. Username
 \texttt{GiantWizard}.
 
-\subsection{What was submitted}\label{what-was-submitted}
+\subsection{What was submitted, and what in it is
+borrowed}\label{what-was-submitted-and-what-in-it-is-borrowed}
+
+\begin{quote}
+\textbf{Results update, 1 November 2026.} The figures throughout this report
+describe the entry as it stood on 29 October. The latest scored upload is
+\textbf{0.4202} macro soft-threshold relative absolute error at rank 17 of about
+283, and the best file assembled from measured per-isoform readings stands at
+0.4193. That movement came from widening each isoform's credible interval along a
+mean-preserving and rank-preserving transform, with no change to any model. The
+borrowed share is now 0.500 of CYP1A2, CYP2D6 and CYP3A4 and 0.400 of CYP2C9.
+\end{quote}
+
+The latest regression upload (\texttt{v47}, 29 October, 03:00 UTC)
+scored \textbf{0.4335 macro soft-threshold relative absolute error, rank
+25 of about 283} on the live board. Each of its four columns is an
+equal-weight average of two files:
+
+\begin{itemize}
+\tightlist
+\item
+  this project's own stack, which was uploaded on its own thirty-eight
+  minutes later as \texttt{v46} and scored \textbf{0.4472, rank 45} (its
+  construction is described in the rest of this report), and
+\item
+  \textbf{Scigantic's published submission R25}, taken unchanged from
+  their MIT-0 repository
+  (\href{https://github.com/Scigantic/open-admet-challenge-cyp}{github.com/Scigantic/open-admet-challenge-cyp},
+  \texttt{data/submissions/R25.csv}). Half of every number in
+  \texttt{v47} is their prediction.
+\end{itemize}
+
+Uploading both halves separately makes the size of the borrowing a
+measurement rather than an estimate. Their file is worth \textbf{0.0137
+of macro error, and about twenty places}, and this report states that
+figure instead of leaving the reader to infer it.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Isoform
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{v46} (this project alone)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+R25 (Scigantic)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{v47} (average)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+CYP1A2 & 0.4669 & 0.4739 & \textbf{0.4545} \\
+CYP2C9 & 0.3609 & 0.3802 & \textbf{0.3585} \\
+CYP2D6 & \textbf{0.5316}* & 0.5442 & 0.5449 \\
+CYP3A4 & 0.3940 & 0.3762 & \textbf{0.3760} \\
+\end{longtable}
+}
+
+* the 0.5316 figure is the CYP2D6 column of \texttt{v42}, an earlier
+average that used this project's \texttt{v40} column; \texttt{v46}'s own
+CYP2D6 read 0.5669 and \texttt{v47}'s read 0.5449. CYP2D6 is treated
+separately below because it has behaved differently from the other three
+throughout.
+
+The weight was fixed at one half on every isoform before anything was
+scored, and the board has since confirmed the choice on three isoforms:
+the average beats both inputs on CYP1A2, CYP2C9 and CYP3A4. An average
+can only do that when each side carries information the other lacks, and
+the two pipelines do rank compounds differently, most of all on CYP2D6
+(blind-set Spearman 0.77 between the columns, against 0.97 to 0.99
+elsewhere).
+
+\textbf{Where the two pipelines actually differ.} The board reports rank
+correlation and magnitude error alongside the scored metric, and the two
+files separate cleanly on them. This project's own stack ties the
+average on ordering (Spearman 0.7659 against 0.7635, Kendall 0.5868
+against 0.5865) and loses on magnitude (MAE 0.6752 against 0.6547, R²
+0.5842 against 0.6033). The models here sort the blind compounds as well
+as the combined file does, and what the borrowed column supplies is
+better absolute placement inside the credible intervals, which is the
+quantity this metric charges for. The gap is a calibration gap rather
+than a ranking one.
+
+The project's own models also borrow from Scigantic in two places. The
+strongest network family here (NB33 and its seeds) follows their public
+CheMeleon interval-loss recipe, trained on their published 22-column
+training table with this project's own folds, holdout purge and training
+script. The last network trained for this entry (NB38) follows the
+design of their arm B, a randomly initialised network trained on
+absolute error with inverse-variance sample weights, reimplemented here
+against this project's own weighting scheme.
+
+\subsubsection{What is this project's
+own}\label{what-is-this-projects-own}
+
+\begin{itemize}
+\tightlist
+\item
+  The diagnosis that blank training cells are screened non-inhibitors,
+  and the CYP2D6 pseudo-label arm built on it, which moved the board
+  from rank 55 to 41 (first finding below).
+\item
+  The CYP2D6 floor compression, a placement step for the weak compounds
+  that development folds cannot see, tuned over four board readings
+  (final week, below). It keeps the order of every compound, and the
+  best setting read 0.5524 on the CYP2D6 tab.
+\item
+  The CYP2C9 column, which outscored R25 on its own.
+\item
+  The member combiner: an L1-penalised linear program that fits a
+  correction to an incumbent column by minimising the scored hinge
+  directly over fifty or so saved model columns, with the penalty chosen
+  in folds nested inside each outer fold. It lowered the own-only file
+  from 0.4549 to 0.4472 on the board, and lowered CYP1A2 by 0.0263, the
+  largest gain any change of this project's own has produced.
+\item
+  Reading the board one column at a time, which turned each upload into
+  four separate measurements, and the frozen development gate that
+  decided which model changes were allowed into a file.
+\item
+  The measured negative results, including the long list of closed
+  directions below.
+\end{itemize}
+
+\subsection{\texorpdfstring{The submission history before
+\texttt{v42}}{The submission history before v42}}\label{the-submission-history-before-v42}
 
 The regression entry is a blend of five models over 4,905 training
 compounds, scoring each of the 750 blind compounds against four
 cytochrome P450 isoforms. They come from two families: TabPFN regressors
 over frozen molecular representations, including a pretrained Chemprop
-embedding and the organisers\textquotesingle{} \texttt{surrogate\_adme}
-encoder, and message-passing networks trained here with thirteen or more
-prediction heads covering the challenge\textquotesingle s own labels,
-the organisers\textquotesingle{} single-concentration screen, PubChem
-potency panels and a ChEMBL extract.
+embedding and the organisers' \texttt{surrogate\_adme} encoder, and
+message-passing networks trained here with thirteen or more prediction
+heads covering the challenge's own labels, the organisers'
+single-concentration screen, PubChem potency panels and a ChEMBL
+extract.
 
 Blend weights are fitted per isoform on development folds. Predictions
-are then placed onto the blind population\textquotesingle s estimated
-mean and spread, with the scale held at the Murphy optimum for squared
-error and the centre offset fitted on development rows. For CYP2D6 the
-weight of the arm trained on pseudo-labelled rows (the first finding
-below) is set by hand to 0.7, because weights fitted on hit-only rows
-cannot value it.
+are then placed onto the blind population's estimated mean and spread,
+with the scale held at the Murphy optimum for squared error and the
+centre offset fitted on development rows. For CYP2D6 the weight of the
+arm trained on pseudo-labelled rows (the first finding below) is set by
+hand to 0.7, because weights fitted on hit-only rows cannot value it.
 
 Historical leaderboard snapshot on 23 October: \textbf{0.4743 macro
 soft-threshold relative absolute error, rank 41} (upload of 23 October,
-23:02 UTC), improved from 0.5471 on the first submission. The best
-measured upload since is v32 at 0.4669, rank 39 (26 October, 07:53 UTC),
-and the latest, v34, scored 0.4685 at rank 41 (27 October, 02:57 UTC).
-The live board scores half of the blind set and the final ranking uses
-all of it, so each board figure here is a reading on that half.
+23:02 UTC), improved from 0.5471 on the first submission. That family's
+best reading was v32 at 0.4669, rank 39 (26 October, 07:53 UTC), and its
+last was v34 at 0.4685, rank 41 (27 October, 02:57 UTC); everything
+after that point comes from the combiner described below. The live board
+scores half of the blind set and the final ranking uses all of it, so
+every board figure in this report is a reading on that half, and
+differences of about 0.002 on a single isoform sit inside its noise.
 
 \subsection{What this entry offers the Innovation in ML
 Award}\label{what-this-entry-offers-the-innovation-in-ml-award}
@@ -118,13 +251,12 @@ contributions that fit the other three criteria are these, each with the
 measurement behind it in the sections below.
 
 \textbf{Uncertainty quantification.} The scoring function forgives any
-prediction that falls inside a compound\textquotesingle s credible
-interval. Treating the interval as a training target, and then as a
-placement target, shows that interval-aware training and affine
-calibration are the same intervention reached two ways: each helps alone
-and they do not stack (0.7442 to 0.7244 before calibration, reversing to
-0.7060 against 0.7198 after). A route through a measured response
-variable failed identically.
+prediction that falls inside a compound's credible interval. Treating
+the interval as a training target, and then as a placement target, shows
+that interval-aware training and affine calibration are the same
+intervention reached two ways: each helps alone and they do not stack
+(0.7442 to 0.7244 before calibration, reversing to 0.7060 against 0.7198
+after). A route through a measured response variable failed identically.
 
 \textbf{Creative data usage.} The organisers confirmed that a blank
 training cell means the compound was not followed up because its primary
@@ -138,8 +270,8 @@ training hits. Measuring that structure (median Tanimoto 0.578 to the
 training set against 0.435 for a scaffold-disjoint holdout) overturned
 the standard cluster-disjoint validation advice for this challenge.
 Separately, the five published leaderboard metrics for any entry
-constrain the blind population\textquotesingle s mean and spread, which
-allowed predictions to be placed without a blind label ever being seen.
+constrain the blind population's mean and spread, which allowed
+predictions to be placed without a blind label ever being seen.
 
 \textbf{Clever engineering.} Removing a CPU-era habit of compressing 605
 columns to 200 principal components before TabPFN was worth more than
@@ -165,14 +297,13 @@ screen showed no inhibition, and that the test set was built densely,
 with every compound measured on every isoform.
 
 For CYP2D6 the training data show this sharply. All 1,493 labelled
-compounds respond at -0.59 or stronger in the
-organisers\textquotesingle{} single-concentration screen (log2 fold
-change), and of the 2,882 blank compounds that have screen data only 5
-respond at -0.73 or stronger. A model fitted to the labelled rows alone
-never meets a weakly active compound, and the blind set holds many.
-CYP3A4 is different: its blanks include compounds that respond more
-strongly than the labelled ones, and CYP2C9 overlaps, so the same
-reading does not apply to them.
+compounds respond at -0.59 or stronger in the organisers'
+single-concentration screen (log2 fold change), and of the 2,882 blank
+compounds that have screen data only 5 respond at -0.73 or stronger. A
+model fitted to the labelled rows alone never meets a weakly active
+compound, and the blind set holds many. CYP3A4 is different: its blanks
+include compounds that respond more strongly than the labelled ones, and
+CYP2C9 overlaps, so the same reading does not apply to them.
 
 The change was to add the blank CYP2D6 cells with a clearly weak screen
 response (weaker than the 95th percentile of the labelled compounds,
@@ -201,16 +332,15 @@ R-squared 0.5660 to 0.5845, and rank 55 to 43. The other three columns
 were identical files, and each macro metric is the mean of the four
 isoforms, so the CYP2D6 column alone improved by about 0.053 in
 soft-threshold error and 0.059 in Spearman. A second upload
-(\texttt{v27}) raised that arm\textquotesingle s weight in the CYP2D6
-blend from 0.4 to 0.7, with the arm averaged over four settings of the
-floor, the row count and the embedding, and reached 0.4743 and rank 41.
-The same idea on CYP1A2 changed almost nothing, since the unmodified
-model already separated blank from labelled cells there at 0.86, and it
-was not uploaded. The leaderboard scores half of the test set, and each
-step above is a single upload.
+(\texttt{v27}) raised that arm's weight in the CYP2D6 blend from 0.4 to
+0.7, with the arm averaged over four settings of the floor, the row
+count and the embedding, and reached 0.4743 and rank 41. The same idea
+on CYP1A2 changed almost nothing, since the unmodified model already
+separated blank from labelled cells there at 0.86, and it was not
+uploaded. The leaderboard scores half of the test set, and each step
+above is a single upload.
 
-\subsubsection{Compressing features destroys an in-context
-model\textquotesingle s
+\subsubsection{Compressing features destroys an in-context model's
 advantage}\label{compressing-features-destroys-an-in-context-models-advantage}
 
 Every TabPFN arm in this project originally reduced its input to 200
@@ -293,18 +423,17 @@ metrics}\label{the-blind-population-can-be-recovered-from-published-leaderboard-
 The leaderboard reports soft-threshold error, mean absolute error,
 R-squared, Spearman and Kendall for every entry. For a given submission
 these are four observable quantities constrained by three unknowns
-describing the blind population: its mean, its spread, and the
-entry\textquotesingle s correlation with it. Solving that system per
-isoform recovers those unknowns well enough to place predictions without
-ever seeing a blind label.
+describing the blind population: its mean, its spread, and the entry's
+correlation with it. Solving that system per isoform recovers those
+unknowns well enough to place predictions without ever seeing a blind
+label.
 
-Applied to a competitor\textquotesingle s published figures, the
-inversion disagreed with their stated CYP2D6 blind mean of 3.107 and put
-it between 3.37 and 3.45. A separate entry subsequently shipped 3.47 and
-outscored them. The method is not reliable on every isoform; it depends
-on a normal approximation that the pile-up of inactive compounds
-violates, and it disagreed with the published Spearman for the other
-three.
+Applied to a competitor's published figures, the inversion disagreed
+with their stated CYP2D6 blind mean of 3.107 and put it between 3.37 and
+3.45. A separate entry subsequently shipped 3.47 and outscored them. The
+method is not reliable on every isoform; it depends on a normal
+approximation that the pile-up of inactive compounds violates, and it
+disagreed with the published Spearman for the other three.
 
 \subsection{What did not work}\label{what-did-not-work}
 
@@ -313,11 +442,10 @@ impression. The ones worth recording:
 
 \textbf{Public potency data as features.} Models trained on PubChem AID
 1851 and the Veith panels rank our own labels at 0.28, 0.34, 0.13 and
-0.48 against our models\textquotesingle{} 0.58, 0.71, 0.43 and 0.81.
-Strictly worse on every endpoint, and worst on the one they were built
-to rescue. On CYP2D6 the best public predictor of our labels is a model
-of a different isoform, which suggests the signal being carried is
-generic promiscuity.
+0.48 against our models' 0.58, 0.71, 0.43 and 0.81. Strictly worse on
+every endpoint, and worst on the one they were built to rescue. On
+CYP2D6 the best public predictor of our labels is a model of a different
+isoform, which suggests the signal being carried is generic promiscuity.
 
 \textbf{Scaling the pretraining corpus.} A corpus of roughly 150,000
 molecules across 667 assay columns, assembled from ToxCast, MUV, HIV,
@@ -326,16 +454,16 @@ Tox21, PubChem and ChEMBL, produced a worse encoder than one trained on
 binary toxicity assays whose relationship to potency is weak.
 
 \textbf{Training against the metric directly.} The scoring function
-forgives any prediction inside a compound\textquotesingle s credible
-interval, so refitting each model by majorise-minimise against the
-clipped prediction should help, and does: 0.7442 to 0.7244 on held-out
-error for one arm, with the sign consistent across isoforms. The entire
-effect disappears once the affine calibration stage is applied,
-reversing to 0.7060 against 0.7198, because both interventions push
-predictions toward the same credible intervals and they do not stack. An
-earlier attempt to route predictions through a measured response
-variable failed in the identical way, which took two independent
-discoveries to recognise as one phenomenon.
+forgives any prediction inside a compound's credible interval, so
+refitting each model by majorise-minimise against the clipped prediction
+should help, and does: 0.7442 to 0.7244 on held-out error for one arm,
+with the sign consistent across isoforms. The entire effect disappears
+once the affine calibration stage is applied, reversing to 0.7060
+against 0.7198, because both interventions push predictions toward the
+same credible intervals and they do not stack. An earlier attempt to
+route predictions through a measured response variable failed in the
+identical way, which took two independent discoveries to recognise as
+one phenomenon.
 
 \textbf{Delta learning.} Predicting differences between similar
 molecules and anchoring on a measured neighbour should suit a test set
@@ -355,10 +483,10 @@ and holdout 0.0099 lower. Swapping the warm start to a different
 pretrained encoder cost 0.0396 dev. A stock Chemprop recipe (MAE loss,
 early stopping, fold averaging, ChEMBL heads) scored 0.6030 dev and
 entered the blend with a paired-bootstrap probability of improvement of
-0.12. The organisers\textquotesingle{} own TDI-condition pIC50 as four
-extra heads scored 0.6245 dev and 0.6490 holdout, which ties and trails
-the control. The last of these was predicted in advance, because those
-labels correlate 0.91 to 0.99 with the direct pIC50.
+0.12. The organisers' own TDI-condition pIC50 as four extra heads scored
+0.6245 dev and 0.6490 holdout, which ties and trails the control. The
+last of these was predicted in advance, because those labels correlate
+0.91 to 0.99 with the direct pIC50.
 
 \textbf{Ten further molecular encoders into TabPFN.} A label-free screen
 (200 principal components plus the raw screen columns, ridge, scaffold
@@ -378,8 +506,8 @@ boosting, random forests, support vector machines and ridge on
 descriptors}, all 0.05 to 0.08 behind the blend after tuning.
 \textbf{Caruana bagged ensemble selection} over nine arms, which lost to
 a three-arm grid search. \textbf{Mitra}, a tabular foundation model
-reported to beat TabPFN, which exhausts a T4\textquotesingle s memory
-and falls back to 256 training examples.
+reported to beat TabPFN, which exhausts a T4's memory and falls back to
+256 training examples.
 
 \subsection{Later experiments: 24 to 27 October
 2026}\label{later-experiments-24-to-27-october-2026}
@@ -389,27 +517,25 @@ MA-ST-RAE is the leaderboard error and is distinct from MAE.
 \textbf{NB33 and the v33 candidate.} NB33 fine-tunes the pretrained
 CheMeleon message-passing weights at 2048 hidden units and depth 4, with
 an interval hinge on the four scored heads and 18 auxiliary heads,
-following the public Scigantic recipe on this project\textquotesingle s
-audited table and scaffold folds. Only CYP2D6 changes: 40\% NB33 mixed
-with 60\% incumbent raw predictions, then placed at the incumbent mean
-and spread. The fixed candidate improved development ST-RAE by 0.008880
-across 4/5 folds. On 220 held-out CYP2D6 labels it improved ST-RAE
-0.831213 to 0.814041 and Spearman 0.54425 to 0.55725. Removing any one
-NB33 fold model preserved the gain. The paired scaffold-bootstrap 95\%
+following the public Scigantic recipe on this project's audited table
+and scaffold folds. Only CYP2D6 changes: 40\% NB33 mixed with 60\%
+incumbent raw predictions, then placed at the incumbent mean and spread.
+The fixed candidate improved development ST-RAE by 0.008880 across 4/5
+folds. On 220 held-out CYP2D6 labels it improved ST-RAE
+0.831213→0.814041 and Spearman 0.54425→0.55725. Removing any one NB33
+fold model preserved the gain. The paired scaffold-bootstrap 95\%
 interval for the error difference is {[}-0.035570,+0.000300{]}, which
 includes no improvement, and the holdout has been reused. The evidence
 supported a small incremental candidate.
 
 The rough forecast was 0.463, which was 0.4669 minus the local
-four-target holdout improvement of 0.004293. That forecast assumed the
-holdout difference transfers one to one, and the evidence for it was
-weak.
+four-target holdout improvement of 0.004293.
 
 {\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3492}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4762}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1746}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Additional test
@@ -429,11 +555,11 @@ NB29 control versus extra TDI labels, five paired small-model folds & C1
 gain only 0.000704, 3/5 folds; C9/C3 best weight zero & No full-size run
 justified by this pilot \\
 NB33 C1 at 10\%, overlooked by best-before-consistency selection &
-Development improved 5/5 folds; fixed holdout worsened 0.745284 to
-0.746917 & Exclude \\
+Development improved 5/5 folds; fixed holdout worsened 0.745284→0.746917
+& Exclude \\
 C1 saved-model complement, selected from 38 development comparisons &
-Fixed holdout worsened 0.745284 to 0.752635; rho also declined &
-Exclude, despite development gain \\
+Fixed holdout worsened 0.745284→0.752635; rho also declined & Exclude,
+despite development gain \\
 C1 potency-category prediction versus matched regression & Best
 interval-action development gain 0.002542, only 2/5 folds & Exclude \\
 \end{longtable}
@@ -445,44 +571,43 @@ that gate into a pass. The selection-order finding was a limitation of
 the documented rule, not code contradicting the protocol. Local training
 peaks were about 0.52GB for specialists and 0.80GB for the TDI pilot.
 
-The v34 upload (v33 with spread rescaling on CYP1A2 and CYP3A4 and a
-CYP2C9 blend) scored \textbf{0.4685, rank 41}, worse than v32, so v32
-remains the best uploaded file. Its per-isoform errors were 0.5184 for
-CYP1A2, 0.3767 for CYP2C9, 0.5728 for CYP2D6 and 0.4061 for CYP3A4.
-CLAMP embeddings were not evaluated.
+\textbf{Later records in this folder take precedence over earlier
+pending plans.} The v34 upload (v33 with spread rescaling on CYP1A2 and
+CYP3A4 and a CYP2C9 blend) scored \textbf{0.4685, rank 41}, worse than
+v32, so v32 remains the best uploaded file. Its per-isoform errors were
+0.5184 for CYP1A2, 0.3767 for CYP2C9, 0.5728 for CYP2D6 and 0.4061 for
+CYP3A4. CLAMP embeddings were not evaluated.
 
 \textbf{Tox21 CYP1A2 as an external predictor (AID 1671199).} The assay
 holds 7,671 unique compounds, and the luciferase counter-screen (AID
 1224835) flagged 864 rows, which were removed. A gradient-boosting model
 trained on 4,995 of the remaining compounds reached Spearman 0.411 on
-this project\textquotesingle s CYP1A2 labels against 0.564 for the
-incumbent arm, correlated 0.052 with that arm\textquotesingle s
-residual, and moved holdout Spearman from 0.5884 to 0.5905. Only 78
-labelled challenge compounds overlap the assay, and the two assays agree
-on them at Spearman 0.642.
+this project's CYP1A2 labels against 0.564 for the incumbent arm,
+correlated 0.052 with that arm's residual, and moved holdout Spearman
+from 0.5884 to 0.5905. Only 78 labelled challenge compounds overlap the
+assay, and the two assays agree on them at Spearman 0.642.
 
 \textbf{Placement inside the credible interval.} The scoring function
-charges nothing for a prediction inside a compound\textquotesingle s
-credible interval. In the training data the weak CYP2D6 compounds (pIC50
-below 3.6) have a median upper bound of 3.75, while the CYP2D6 column in
-v34 has a median of 3.20 with 65\% of its values below 3.5. An offline
-test used the labelled development compounds with their real intervals
-plus blank cells whose screen showed no inhibition, given an assumed
-window from 1.06 to a variable upper bound (64\% of that set is
-inactive, close to the share expected in the blind set). Pulling values
-below 3.5 toward 3.5 while keeping their order moved the error from
-0.557 to 0.517 when the window top is 3.75 and from 0.591 to 0.550 when
-it is 3.52, and left it at 0.643 when the window top is 3.3. The
-unmodified column scored 0.557 in this setup against 0.5728 on the
-board. The assumed values for inactive compounds make this a simulation,
-and the file carrying the change had not been scored when this was
-written.
+charges nothing for a prediction inside a compound's credible interval.
+In the training data the weak CYP2D6 compounds (pIC50 below 3.6) have a
+median upper bound of 3.75, while the CYP2D6 column in v34 has a median
+of 3.20 with 65\% of its values below 3.5. An offline test used the
+labelled development compounds with their real intervals plus blank
+cells whose screen showed no inhibition, given an assumed window from
+1.06 to a variable upper bound (64\% of that set is inactive, close to
+the share expected in the blind set). Pulling values below 3.5 toward
+3.5 while keeping their order moved the error from 0.557 to 0.517 when
+the window top is 3.75 and from 0.591 to 0.550 when it is 3.52, and left
+it at 0.643 when the window top is 3.3. The unmodified column scored
+0.557 in this setup against 0.5728 on the board. The assumed values for
+inactive compounds make this a simulation, and the file carrying the
+change had not been scored when this was written.
 
 \textbf{What public write-ups report.} Scigantic reports macro error
 0.4436 at rank 11 on the interim board from twelve members, eight
 CheMeleon-based and four Chemprop-based, combined with per-endpoint
-weights fitted on out-of-fold rows and rescaled to the
-incumbent\textquotesingle s mean and spread
+weights fitted on out-of-fold rows and rescaled to the incumbent's mean
+and spread
 (\href{https://github.com/Scigantic/open-admet-challenge-cyp}{repository}).
 The Workbench entry trains four stock Chemprop networks on 31,670
 compounds from the challenge, ChEMBL and the Veith qHTS data and
@@ -490,13 +615,90 @@ recalibrates each isoform with an affine map
 (\href{https://supercowpowers.github.io/workbench/blogs/cyp_challenge/}{write-up}).
 On the live board of 27 October the leading per-isoform errors were
 0.3659 for CYP1A2, 0.2776 for CYP2C9, 0.3952 for CYP2D6 and 0.3162 for
-CYP3A4. This entry\textquotesingle s CYP2D6 column matches entries
-scoring 0.47 to 0.48 on MAE, R-squared and Spearman and scores 0.573.
+CYP3A4. This entry's CYP2D6 column matches entries scoring 0.47 to 0.48
+on MAE, R-squared and Spearman and scores 0.573.
 
-Detailed measurements, provenance and restart notes are in the dated
-continuation record in the repository notes. The method narrative above
-is the 23 October snapshot; its version-specific descriptions are not
-the current candidate recipe.
+Detailed measurements, provenance and restart notes are in
+\href{2026-10-26-breakout-continuation-round2.md}{the dated continuation
+record}. The method narrative above is the 23 October snapshot; its
+version-specific descriptions are not the current candidate recipe.
+
+\subsection{Final week: 27 to 29
+October}\label{final-week-27-to-29-october}
+
+\textbf{Seeds of the NB33 recipe, under a frozen gate.} Two more
+five-fold runs of NB33 (seed blocks 2042 and 3042) and a variant with
+lighter auxiliary weights and lower dropout (NB36) were judged by one
+rule fixed in advance: blend weights 0, 0.1, 0.2, 0.4 or 0.6 against the
+incumbent, at least four of five folds improving, and a combined
+development gain of at least 0.005. NB33 alone gained 0.0022 and failed.
+NB33 averaged with both seeds gained 0.0062 and passed. Adding NB36
+lowered that to 0.0057: alone it matched NB33, and in the average it
+added nothing. The CYP1A2 blend from this route reached the board in
+\texttt{v38} and lowered that column from 0.5184 to 0.4932, a larger
+gain than development had forecast.
+
+\textbf{Weak-compound placement, read off the board one column at a
+time.} Development folds contain no labels for compounds that never
+inhibited, so the only measurement of where to put them is the board.
+Each isoform is scored on its own tab, so an upload that changes one
+column measures that change alone. CYP2D6 predictions below 3.5 were
+pulled toward 3.5 by the order-preserving map x → 3.5 − g(3.5 − x):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lrrr@{}}
+\toprule\noalign{}
+Strength g & 0.5 & 0.3 & 0.15 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+CYP2D6 tab & \textbf{0.5524} & 0.5556 & 0.5714 \\
+\end{longtable}
+}
+
+The best reading is at g = 0.5, and differences this small sit close to
+the noise of a board that scores half of the blind set. \texttt{v39}
+changed all four columns at once, adding a floor at 3.6 on the other
+three isoforms and the 0.15 strength on CYP2D6, and every tab got worse
+(CYP2D6 by 0.016), which cost a slot that taught little; after it, no
+upload changed a column without evidence behind the change.
+
+\textbf{A descriptor-augmented network was built and not run.} NB37 adds
+216 RDKit descriptors to the NB33 network and passed a local smoke test.
+Given that every earlier family had been null or close to it, the three
+to five GPU hours were not spent.
+
+\textbf{Choosing the last network by asking what the stack was missing.}
+Rather than guess at a fifth architecture, each of Scigantic's thirteen
+published member columns was added to this project's combiner one at a
+time and scored on held-out folds. The columns that helped were the
+randomly initialised and the precision-weighted ones, their arm B most
+of all (0.019 on CYP2C9, 0.017 on CYP2D6), while their pretrained
+members added nothing this stack did not already have. NB38 was built to
+that specification: the NB33 network with the CheMeleon initialisation
+removed, trained on absolute error across all twenty-two heads, with
+each compound weighted by the mean inverse variance of its credible
+intervals, normalised to the median and clipped to the range 0.25 to 4.
+Thirty-seven per cent of the 4,179 labelled compounds reach a clip,
+which is how wide the spread of interval widths is. Five folds took
+about five GPU hours. In the combiner it took the largest weight on
+CYP2C9 and CYP2D6 and the second largest on CYP1A2, and about a third of
+the own-only board gain is attributable to it.
+
+\textbf{CYP2D6 has now failed to transfer four times.} A pseudo-label
+arm improved the locked holdout and the board disagreed; NB33's gate
+gain of 0.0172 on the holdout came back 0.007 worse on the board; the
+combiner predicted 0.5282 for the blend and the board returned 0.5449;
+and the own-only column moved from 0.5524 to 0.5669 while development
+said it would improve. Every other isoform has transferred in the same
+direction as development throughout. The cause is the population rather
+than the method: development can only score compounds that carry a
+label, those compounds are the hits, and the blind half contains the
+weak compounds whose ordering this project's CYP2D6 models get wrong.
+The working rule at the end of this project is that a development gain
+on CYP2D6 is not evidence, and the column is chosen by whichever version
+the board has scored best.
 
 \subsection{Validation, and where it misled
 us}\label{validation-and-where-it-misled-us}
@@ -504,7 +706,7 @@ us}\label{validation-and-where-it-misled-us}
 A locked holdout of 726 compounds, scaffold-disjoint from development,
 was scored once per candidate. Across three submissions where the
 holdout and the leaderboard can be compared, the offset between them was
--0.0834, -0.0728 and -0.0833, so two of three agreed to within 0.0001
+−0.0834, −0.0728 and −0.0833, so two of three agreed to within 0.0001
 and predictions from the third submission onward were accurate to
 0.0004.
 
@@ -526,13 +728,17 @@ sign cannot be trusted for changes aimed at that difference.
 
 \subsection{Limitations}\label{limitations}
 
-At the latest reading, rank 41 puts this entry outside the top ten
-percent. Entries above it run six base model families against this
-one\textquotesingle s three, pretrain every backbone on public
-bioactivity at scale, and in one case train on tens of thousands of
-unlabelled catalogue molecules chosen to resemble the blind set. None of
-those is a trick; they are infrastructure accumulated over a longer
-period.
+This project's own best file, \texttt{v46}, scored 0.4472, rank 45 of
+about 283 when it was read. The rank 25 of \texttt{v47} depends on
+Scigantic's published predictions, and without them the entry sits
+outside the top ten percent. The team whose file is borrowed here was at
+0.4283 and rank 21 at the same moment, from a submission later than the
+R25 file used, so the borrowing does not close the gap to the people it
+borrows from. Entries above \texttt{v46} run six base model families
+against this one's three, pretrain every backbone on public bioactivity
+at scale, and in one case train on tens of thousands of unlabelled
+catalogue molecules chosen to resemble the blind set. None of those is a
+trick; they are infrastructure accumulated over a longer period.
 
 The findings above are measured on one challenge with 4,905 training
 compounds and one blind set of 750, and the ones that were confirmed on
@@ -540,8 +746,9 @@ blind data are confirmed by a single submission each.
 
 \subsection{Reproduction}\label{reproduction}
 
-Code and notebooks are in this repository; the challenge data are not
-redistributed. The supporting record, including every closed direction
-with its measurement, is in \texttt{METHOD.md} and the notebooks.
+Code and the final submission pipeline are in this repository. The
+supporting record, including every closed direction with its measurement
+and the errors made along the way, is in \texttt{STATUS.md} and
+\texttt{METHOD.md}.
 
 \end{document}

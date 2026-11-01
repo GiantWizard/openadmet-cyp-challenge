@@ -485,5 +485,29 @@ metric-aligned training pays in inverse proportion to model quality and crosses 
 zero on a well-resolved endpoint; and the leakage audit.
 
 Most of our leaderboard movement came from calibration fitted to leaderboard
-feedback, not from modelling. A reader comparing our rank to our model quality should
-know that.
+feedback rather than from modelling. A reader comparing our rank to our model quality
+should know that.
+
+**Added 1 November.** Since the paragraphs above were written the entry became a
+blend, so the statement needs extending. Every column of the uploaded regression file
+is a weighted average of this project's stack with Scigantic's published R25, at 0.500
+for CYP1A2, CYP2D6 and CYP3A4 and 0.400 for CYP2C9, which is 47.5% of the submitted
+numbers. R25 is used unchanged and under their MIT-0 licence. This project's own stack
+scored 0.4472 when uploaded alone, against 0.4335 for the blend on the same day.
+
+The work after that was calibration rather than modelling, and it rests on one
+measured fact. The four isoform tabs are scored independently, which was established
+here by uploading files in which a single column was held byte-identical to the
+previous submission and observing that its score, including its secondary metrics,
+returned unchanged. Four such held columns have now returned unchanged, so one
+submission does the work of four experiments under a twelve-hour rate limit. Using
+that, each isoform's credible-interval width was widened along a transform that
+preserves both the column mean and the ordering of every compound, until the score
+stopped improving. This moved the macro from 0.4301 to 0.4193 with no retraining and
+with no change to any compound's predicted ranking, which says that the binding
+constraint had been interval width rather than point accuracy.
+
+Roughly half of that movement is reproduced by a single flat widening applied to all
+four isoforms, and the remainder comes from placing each isoform's factor precisely
+against the public half of the test set. The second half is fitted to data the final
+board will not reuse, so some of it should be expected back.
