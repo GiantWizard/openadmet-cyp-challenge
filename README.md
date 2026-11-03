@@ -12,7 +12,7 @@ rather than against pIC50 accuracy.
 
 ## Status and contents
 
-Regression entry `GiantWizard`. Latest scored upload: macro soft-threshold error **0.4192**, 2 November 2026. The full method report is in [report/report.pdf](report/report.pdf) with its LaTeX source in `report/report.tex`.
+Regression entry `GiantWizard`. Latest scored upload: macro soft-threshold error **0.4192**, 2 November 2026. The full method report is in [report/report.pdf](report/report.pdf) with its Markdown source in [report/report.md](report/report.md).
 
 ### What in the submission is borrowed
 
