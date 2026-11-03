@@ -1,42 +1,34 @@
 # OpenADMET CYP Blind Challenge
 
-An entry for the [OpenADMET CYP Inhibition Blind Challenge](https://huggingface.co/spaces/openadmet/cyp-challenge),
-covering the direct-inhibition regression track and the time-dependent-inhibition
-classification track.
+Code and report for `GiantWizard` in the [OpenADMET CYP Inhibition Blind Challenge](https://huggingface.co/spaces/openadmet/cyp-challenge), covering direct-inhibition regression and time-dependent inhibition (TDI) classification.
 
-The modelling idea is in [METHOD.md](METHOD.md). In short: the scored metric charges
-nothing for a prediction that lands inside a compound's fitted credible interval, and
-those intervals are about ten times wider for inactive compounds than for potent
-ones. Everything here follows from training and deciding against that asymmetry
-rather than against pIC50 accuracy.
+The full technical write-up is in [report/report.pdf](report/report.pdf) (Markdown source in [report/report.md](report/report.md)), and [METHOD.md](METHOD.md) holds the longer experiment notes. On the regression track, the scored metric (MA-ST-RAE) assigns zero error inside a molecule's experimental credible interval. Inactive molecules below pIC50 4 carry intervals around 2 log units wide, while potent hits carry intervals around 0.2 log units wide. In addition, the 750 blind test molecules were chosen by expanding hits on CYP1A2, CYP2C9, and CYP3A4 while the CYP2D6 Echo-MS assay was still in setup. The pipeline here trains and calibrates around those two properties of the data.
 
-## Status and contents
+## Score and attribution
 
-Regression entry `GiantWizard`. Latest scored upload: macro soft-threshold error **0.4192**, 2 November 2026. The full method report is in [report/report.pdf](report/report.pdf) with its Markdown source in [report/report.md](report/report.md).
+Latest scored regression upload (v56, 2 November 2026): **0.4192** MA-ST-RAE.
 
-### What in the submission is borrowed
+The final regression file averages my five-arm stack (`v46`) with [Scigantic's published R25 submission](https://github.com/Scigantic/open-admet-challenge-cyp) (MIT-0 license). Weights on R25 are 0.500 for CYP1A2, CYP2D6, and CYP3A4, and 0.400 for CYP2C9 (**47.5% of the submitted values come from R25**). On 29 October, I uploaded both files on the same day to measure the split: `v46` scored 0.4472, and the `v47` average scored 0.4335.
 
-The uploaded regression file is a weighted average of this project's own stack with [Scigantic's published submission R25](https://github.com/Scigantic/open-admet-challenge-cyp), taken unchanged from their MIT-0 repository. The weight on their predictions is 0.500 for CYP1A2, CYP2D6 and CYP3A4 and 0.400 for CYP2C9, so **47.5% of the submitted numbers are theirs**. This project's own models were uploaded alone as a measurement on 29 October and scored 0.4472 against the blend's 0.4335 the same day.
+The Murphy $R^2$ decomposition and the method of solving for blind test moments from leaderboard feedback come from team `briford` (SuperCowPowers). The credits table in section 6 of `report/report.pdf` lists the credit breakdown for each part of the submission.
 
-The affine placement correction, and the idea of recovering the blind test set's label distribution from leaderboard feedback, are team briford's (SuperCowPowers), published before this project arrived at them. Table 4 of the method report sets out who made which part.
+## Repository layout
 
-- `report/` the method report (LaTeX source and compiled PDF).
-- `src/` the pipeline and analysis scripts.
-- `notebooks/` the Colab notebooks that trained the neural arms. They read prepared payload archives from Google Drive that are not part of this repository, so they document the recipes and cannot be rerun without rebuilding those archives from the challenge data.
-- `METHOD.md` the modelling idea in short form.
+- `report/` : Markdown source (`report.md`) and compiled PDF (`report.pdf`).
+- `METHOD.md` : experiment log covering the metric math and negative results.
+- `src/` : local descriptor pipeline, LightGBM interval objective, and TDI classifier.
+- `notebooks/` : Colab notebooks for the Chemprop, CheMeleon, and TabPFN arms. These notebooks read preprocessed feature archives from Google Drive (omitted from git due to file size), so they document the training configurations unless rebuilt from the raw CSVs.
 
-The challenge data and the submission files are not redistributed here.
+Git tracks only the code and write-ups; raw challenge CSVs and generated submission files stay local.
 
-## Layout
-
-```
-src/features.py    ECFP4 counts and RDKit descriptors, on standardised structures
-src/metric.py      the challenge's soft-threshold RAE, and a LightGBM objective of the same shape
-src/decision.py    the per-compound ST-RAE decision layer
-src/pipeline.py    scaffold-grouped cross-validation, one isoform per invocation
-src/submit.py      refit on all labelled data, apply the decision layer, write the regression file
-src/tdi.py         the TDI classification track
-src/build_data.py  assemble the modelling table from the challenge release
+```text
+src/build_data.py  merge raw challenge CSVs into modeling tables
+src/features.py    ECFP4 counts and RDKit 2D descriptors on standardized SMILES
+src/metric.py      MA-ST-RAE scorer and custom LightGBM interval objective
+src/decision.py    interval placement and spread scaling helpers
+src/pipeline.py    5-fold Bemis-Murcko scaffold CV (one isoform per run)
+src/submit.py      fit on full table, apply calibration, write regression CSV
+src/tdi.py         TDI LightGBM pipeline and MCC threshold sweep
 ```
 
 ## Running it

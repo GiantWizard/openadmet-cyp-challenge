@@ -4,7 +4,7 @@ Jeffery Chen
 November 2026
 
 ## 1. Overview
-My entry (GiantWizard) covers both tracks of the OpenADMET CYP Inhibition Blind Challenge: direct inhibition regression on CYP1A2, CYP2C9, CYP2D6, and CYP3A4, plus time-dependent inhibition (TDI) classification on CYP2D6 and CYP3A4. I only used public data. The code and scripts to run everything are up at `github.com/GiantWizard/openadmet-cyp-challenge`.
+My entry covers both tracks of the OpenADMET CYP Inhibition Blind Challenge: direct inhibition regression on CYP1A2, CYP2C9, CYP2D6, and CYP3A4, plus time-dependent inhibition (TDI) classification on CYP2D6 and CYP3A4. I only used public data. The code and scripts to run everything are up at `github.com/GiantWizard/openadmet-cyp-challenge`.
 
 The regression leaderboard uses macro soft-threshold relative absolute error (MA-ST-RAE). If a prediction lands inside a compound's credible interval, the error is 0. If it lands outside, you get charged for how far it missed the closer edge of the interval. Weak compounds below $\text{pIC}_{50} = 4$ (below the lowest dose tested) have credible intervals about ten times wider than active hits.
 
