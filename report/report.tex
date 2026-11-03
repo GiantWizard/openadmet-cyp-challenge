@@ -79,8 +79,7 @@ OpenADMET CYP Inhibition Blind Challenge, direct-inhibition (regression)
 and time-dependent-inhibition (classification) tracks. Username
 \texttt{GiantWizard}.
 
-\subsection{What was submitted, and what in it is
-borrowed}\label{what-was-submitted-and-what-in-it-is-borrowed}
+\subsection{What was submitted}\label{what-was-submitted}
 
 \begin{quote}
 \textbf{Note on dates.} The experiment logs and model-side figures later in this
@@ -101,9 +100,9 @@ is 47.5 percent of the submitted numbers:
 \begin{itemize}
 \tightlist
 \item
-  this project's own stack, which was uploaded on its own thirty-eight
-  minutes later as \texttt{v46} and scored \textbf{0.4472, rank 45} (its
-  construction is described in the rest of this report), and
+  the five-arm stack built for this entry, which was uploaded on its own
+  thirty-eight minutes later as \texttt{v46} and scored \textbf{0.4472}
+  (the rest of this report describes how it was built), and
 \item
   \textbf{Scigantic's published submission R25}, taken unchanged from
   their MIT-0 repository
@@ -111,10 +110,8 @@ is 47.5 percent of the submitted numbers:
   \texttt{data/submissions/R25.csv}).
 \end{itemize}
 
-Uploading both halves separately makes the size of the borrowing a
-measurement rather than an estimate. Their file is worth \textbf{0.0137
-of macro error, and about twenty places}, and this report states that
-figure instead of leaving the reader to infer it.
+Both halves went up separately, so R25's contribution is measured rather
+than estimated. It is worth \textbf{0.0137 of macro error}.
 
 {\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
@@ -159,23 +156,22 @@ elsewhere).
 
 \textbf{Where the two pipelines actually differ.} The board reports rank
 correlation and magnitude error alongside the scored metric, and the two
-files separate cleanly on them. This project's own stack ties the
+files separate cleanly on them. The stack built here ties the
 average on ordering (Spearman 0.7659 against 0.7635, Kendall 0.5868
 against 0.5865) and loses on magnitude (MAE 0.6752 against 0.6547, R²
 0.5842 against 0.6033). The models here sort the blind compounds as well
-as the combined file does, and what the borrowed column supplies is
-better absolute placement inside the credible intervals, which is the
-quantity this metric charges for. The gap is a calibration gap rather
+as the combined file does, and R25 supplies better absolute placement
+inside the credible intervals, which is the quantity this metric charges
+for. The gap is a calibration gap rather
 than a ranking one.
 
-The project's own models also borrow from Scigantic in two places. The
-strongest network family here (NB33 and its seeds) follows their public
-CheMeleon interval-loss recipe, trained on their published 22-column
-training table with this project's own folds, holdout purge and training
-script. The last network trained for this entry (NB38) follows the
+Scigantic's work appears in two more places. The strongest network family
+here (NB33 and its seeds) follows their public CheMeleon interval-loss
+recipe, trained on their published 22-column training table with the folds,
+holdout purge and training script written for this entry. The last network trained for this entry (NB38) follows the
 design of their arm B, a randomly initialised network trained on
 absolute error with inverse-variance sample weights, reimplemented here
-against this project's own weighting scheme.
+against the weighting scheme used here.
 
 \subsubsection{Who made which part}\label{who-made-which-part}
 
@@ -724,12 +720,11 @@ sign cannot be trusted for changes aimed at that difference.
 
 \subsection{Limitations}\label{limitations}
 
-The stack built here, uploaded alone as \texttt{v46}, scored 0.4472 at
-rank 45 of about 283 when it was read. That standing depends on Scigantic's
+The stack built here, uploaded alone as \texttt{v46}, scored 0.4472. That standing depends on Scigantic's
 published predictions, and without them this entry sits outside the top
 ten percent of the live board. Their own standing was 0.4283 at rank 21 when it was last
 read on 28 October, from a submission later than the R25 file used here,
-so the submitted file is ahead of the team it borrows from by 0.0091,
+so the submitted file is ahead of Scigantic by 0.0091,
 which is around four times the half-set noise. That margin was produced
 by calibration applied after the blend rather than by the blend itself. Entries above \texttt{v46} run six base model families
 against this one's three, pretrain every backbone on public bioactivity
