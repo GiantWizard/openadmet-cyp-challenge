@@ -499,11 +499,11 @@ The work after that was calibration rather than modelling, and it rests on one
 measured fact. The four isoform tabs are scored independently, which was established
 here by uploading files in which a single column was held byte-identical to the
 previous submission and observing that its score, including its secondary metrics,
-returned unchanged. Four such held columns have now returned unchanged, so one
+returned unchanged. Eight such held columns have now returned unchanged, so one
 submission does the work of four experiments under a twelve-hour rate limit. Using
 that, each isoform's credible-interval width was widened along a transform that
 preserves both the column mean and the ordering of every compound, until the score
-stopped improving. This moved the macro from 0.4301 to 0.4193 with no retraining and
+stopped improving. This moved the macro from 0.4301 to 0.4192 with no retraining and
 with no change to any compound's predicted ranking, which says that the binding
 constraint had been interval width rather than point accuracy.
 

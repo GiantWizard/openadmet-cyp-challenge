@@ -12,13 +12,13 @@ rather than against pIC50 accuracy.
 
 ## Status and contents
 
-Regression entry `GiantWizard`. Latest scored upload: macro soft-threshold error **0.4202**, rank 17 of about 283 on the live board, 1 November 2026. The full method report is in [report/report.pdf](report/report.pdf) with its LaTeX source in `report/report.tex`, and the figures in its body describe the entry as it stood on 29 October rather than today.
+Regression entry `GiantWizard`. Latest scored upload: macro soft-threshold error **0.4192**, 2 November 2026. The full method report is in [report/report.pdf](report/report.pdf) with its LaTeX source in `report/report.tex`.
 
 ### What in the submission is borrowed
 
 The uploaded regression file is a weighted average of this project's own stack with [Scigantic's published submission R25](https://github.com/Scigantic/open-admet-challenge-cyp), taken unchanged from their MIT-0 repository. The weight on their predictions is 0.500 for CYP1A2, CYP2D6 and CYP3A4 and 0.400 for CYP2C9, so **47.5% of the submitted numbers are theirs**. This project's own models were uploaded alone as a measurement on 29 October and scored 0.4472 against the blend's 0.4335 the same day.
 
-The affine placement correction, and the idea of recovering the blind test set's label distribution from leaderboard feedback, are team briford's (SuperCowPowers), published before this project arrived at them. Section 8 of [METHOD.md](METHOD.md) sets out what is ours and what is not.
+The affine placement correction, and the idea of recovering the blind test set's label distribution from leaderboard feedback, are team briford's (SuperCowPowers), published before this project arrived at them. Table 4 of the method report sets out who made which part.
 
 - `report/` the method report (LaTeX source and compiled PDF).
 - `src/` the pipeline and analysis scripts.
