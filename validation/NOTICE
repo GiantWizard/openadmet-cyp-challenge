@@ -1,0 +1,4 @@
+activity_validation.py and tdi_validation.py in this directory are copied
+unmodified from https://github.com/OpenADMET/CYP-Challenge-Tutorial, which is
+licensed under the Apache License 2.0. No changes have been made to either file.
+A copy of the Apache License 2.0 is at https://www.apache.org/licenses/LICENSE-2.0
