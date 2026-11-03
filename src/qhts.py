@@ -2,7 +2,7 @@
 
 Five isoform classifiers trained on the public panel, their out-of-fold probabilities
 attached to every challenge compound. Binary calls are weaker than AC50 but there are
-roughly 13,000 of them per isoform against our 1,300 to 2,300 labels, and CYP1A2 is
+roughly 13,000 of them per isoform against my 1,300 to 2,300 labels, and CYP1A2 is
 the one endpoint with no public potency data at all.
 """
 from __future__ import annotations

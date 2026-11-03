@@ -1,4 +1,4 @@
-"""MCC at blind prevalence across calling rates, with our shipped rates marked."""
+"""MCC at blind prevalence across calling rates, with my shipped rates marked."""
 from __future__ import annotations
 
 import sys
@@ -45,7 +45,7 @@ def main() -> None:
         fpr, tpr, thr = roc_curve(y[obs], oof)
         m = mcc_at(tpr, fpr, p)
         calls = tpr * p + fpr * (1 - p)
-        print(f"\n{iso} (blind prevalence {p:.4f}, our OOF AUC "
+        print(f"\n{iso} (blind prevalence {p:.4f}, my OOF AUC "
               f"{np.trapezoid(tpr, fpr):.4f})")
         for r in (0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50):
             j = int(np.argmin(np.abs(calls - r)))
@@ -56,7 +56,7 @@ def main() -> None:
             q = np.quantile(oof, 1 - r)
             j = int(np.argmin(np.abs(thr - q)))
             out[iso][lab] = m[j]
-            print(f"   OUR {lab:6s} at {r:.3f} -> MCC {m[j]:.4f}")
+            print(f"   MY {lab:6s} at {r:.3f} -> MCC {m[j]:.4f}")
         out[iso]["best"] = m[k]
         print(f"   OPTIMUM at {calls[k]:.3f} -> MCC {m[k]:.4f}")
     print()

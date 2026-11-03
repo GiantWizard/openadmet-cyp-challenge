@@ -1,7 +1,7 @@
 """Optimal TDI calling rate under the BLIND prevalence, not the training one.
 
 The TDI training and holdout sets are about 0.22 positive on CYP2D6 while the blind set
-is 0.0707, so an MCC measured at a given calling rate on our own data does not transfer.
+is 0.0707, so an MCC measured at a given calling rate on my own data does not transfer.
 Here the ROC is estimated from held-out predictions and MCC is computed analytically at
 the blind prevalence, which is what the leaderboard actually scores.
 """
@@ -52,15 +52,15 @@ def main() -> None:
         m = mcc_from_rates(tpr, fpr, p)
         k = int(np.nanargmax(m))
         call = tpr[k] * p + fpr[k] * (1 - p)
-        # what our shipped rate implies
+        # what my shipped rate implies
         q = np.quantile(oof, 1 - SHIPPED[iso])
         j = int(np.argmin(np.abs(thr - q)))
         call_ship = tpr[j] * p + fpr[j] * (1 - p)
-        print(f"{iso}: blind prevalence {p:.4f}  our OOF AUC "
+        print(f"{iso}: blind prevalence {p:.4f}  my OOF AUC "
               f"{np.trapezoid(tpr, fpr):.4f}  (n={len(obs)})")
         print(f"   best achievable MCC at this prevalence  {m[k]:.4f} "
               f"at calling rate {call:.3f} (tpr {tpr[k]:.3f} fpr {fpr[k]:.3f})")
-        print(f"   MCC at our shipped rate {SHIPPED[iso]:.3f}        {m[j]:.4f} "
+        print(f"   MCC at my shipped rate {SHIPPED[iso]:.3f}         {m[j]:.4f} "
               f"(effective calls {call_ship:.3f})")
         print(f"   gain available from retuning            {m[k]-m[j]:+.4f}", flush=True)
         print(flush=True)

@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from metric import st_rae  # noqa: E402
 from pipeline import CACHE, ISOFORMS  # noqa: E402
 
-# Inferred from our own leaderboard metrics via the Murphy decomposition.
+# Inferred from my own leaderboard metrics via the Murphy decomposition.
 TRUE_SD = 1.25
 TRUE_MEAN = 4.17
 RHO = 0.6923
@@ -40,7 +40,7 @@ def band_model():
 
 
 def simulate(rng, centres, lo_w, hi_w):
-    """A blind-set-like population with bands attached, plus predictions of our quality."""
+    """A blind-set-like population with bands attached, plus predictions of my quality."""
     truth = rng.normal(TRUE_MEAN, TRUE_SD, N_SIM)
     lo_half = np.interp(truth, centres, lo_w)
     hi_half = np.interp(truth, centres, hi_w)
@@ -76,7 +76,7 @@ def main() -> None:
     print(f"R2-optimal:     predict mean {TRUE_MEAN:.2f}, sd {r2_scale:.2f}  -> "
           f"ST-RAE {st_rae(truth, pred_r2, lo, hi):.4f}")
 
-    print("\nwhat we actually submitted, per isoform, and the correction implied:")
+    print("\nwhat I actually submitted, per isoform, and the correction implied:")
     sub = pd.read_csv(Path(__file__).resolve().parents[1] / "submissions"
                       / "submission_regression_blend.csv")
     for iso in ISOFORMS:

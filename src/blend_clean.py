@@ -25,9 +25,9 @@ OUT = Path("clean/submissions")
 SEEDS = (0, 1, 2)
 ROUNDS = 900
 P = dict(BASE_PARAMS, learning_rate=0.02, num_leaves=31, feature_fraction=0.25)
-# briford's published blind moments, with CYP2D6's centre corrected. Inverting our
+# briford's published blind moments, with CYP2D6's centre corrected. Inverting my
 # own per-isoform R^2 and MAE puts it at 3.37-3.45 rather than 3.107, and periso
-# shipped 3.47 and outscored us. The other three are left alone: the same inversion
+# shipped 3.47 and outscored mine. The other three are left alone: the same inversion
 # disagrees with the published Spearman there, so it is not trustworthy for them.
 BLIND = {"CYP1A2": (4.412, 1.553), "CYP2C9": (4.830, 1.101),
          "CYP2D6": (3.420, 1.599), "CYP3A4": (4.880, 1.272)}
@@ -150,7 +150,7 @@ def main() -> None:
             np.savez_compressed(CACHE / f"trees_parts_{iso}.npz",
                                 oof=tre_oof, hold=tre_ho, test=tre_te)
         mix_te = w2 * te_route + (1 - w2) * (w * tab_te + (1 - w) * tre_te)
-        # Shrinkage chosen on dev (a property of our model); blind mean from the
+        # Shrinkage chosen on dev (a property of my model); blind mean from the
         # leaderboard inversion (a property of the blind set, which dev cannot see).
         mix_dev = w2 * dev_route + (1 - w2) * base_d
         zd = (mix_dev - mix_dev.mean()) / mix_dev.std()

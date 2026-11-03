@@ -1,9 +1,9 @@
 """TDI submission at the MCC-optimal calling rate for the BLIND prevalence.
 
-Our training and holdout sets are about 0.22 positive on CYP2D6 while the blind set is
-0.0707, so thresholds tuned on our own data land in the wrong place. The rates here are
+My training and holdout sets are about 0.22 positive on CYP2D6 while the blind set is
+0.0707, so thresholds tuned on my own data land in the wrong place. The rates here are
 chosen by maximising MCC analytically from the out-of-fold ROC at the blind prevalence,
-a procedure that reproduces the scored gap between our last two submissions to 0.0007.
+a procedure that reproduces the scored gap between my last two submissions to 0.0007.
 """
 from __future__ import annotations
 

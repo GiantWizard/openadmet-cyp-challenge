@@ -1,6 +1,6 @@
 """Compare nb24 runs. Usage: python score_nb24.py <dir holding results_nb24_<RUN>.json files> ...
 Prints one row per (run, iso, variant) and the AUC / Spearman deltas against that run's own base
-(or against run a's base when a run has no base arm), using the gate from STATUS.md."""
+(or against run a's base when a run has no base arm), using the frozen development gate."""
 import json, sys
 from pathlib import Path
 rows = []
