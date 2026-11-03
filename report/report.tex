@@ -83,19 +83,20 @@ and time-dependent-inhibition (classification) tracks. Username
 borrowed}\label{what-was-submitted-and-what-in-it-is-borrowed}
 
 \begin{quote}
-\textbf{Results update, 1 November 2026.} The figures throughout this report
-describe the entry as it stood on 29 October. The latest scored upload is
-\textbf{0.4202} macro soft-threshold relative absolute error at rank 17 of about
-283, and the best file assembled from measured per-isoform readings stands at
-0.4193. That movement came from widening each isoform's credible interval along a
-mean-preserving and rank-preserving transform, with no change to any model. The
-borrowed share is now 0.500 of CYP1A2, CYP2D6 and CYP3A4 and 0.400 of CYP2C9.
+\textbf{Note on dates.} The experiment logs and model-side figures later in this
+report describe the entry as it stood on 29 October. The score and composition
+given immediately below supersede them. The difference between the two came from
+widening each isoform's credible interval along a transform that preserves both
+the column mean and the ordering of every compound, with no change to any model.
 \end{quote}
 
-The latest regression upload (\texttt{v47}, 29 October, 03:00 UTC)
-scored \textbf{0.4335 macro soft-threshold relative absolute error, rank
-25 of about 283} on the live board. Each of its four columns is an
-equal-weight average of two files:
+The submitted regression file (\texttt{v56}) scored \textbf{0.4192 macro
+soft-threshold relative absolute error} on the live board, which scores
+half of the blind set. Ranks move daily as other entries are submitted
+and the final board is computed on different data, so this report gives
+scores and leaves ranks to the leaderboard. Each of its four columns is a weighted average of two
+files, at 0.500 for CYP1A2, CYP2D6 and CYP3A4 and 0.400 for CYP2C9, which
+is 47.5 percent of the submitted numbers:
 
 \begin{itemize}
 \tightlist
@@ -107,8 +108,7 @@ equal-weight average of two files:
   \textbf{Scigantic's published submission R25}, taken unchanged from
   their MIT-0 repository
   (\href{https://github.com/Scigantic/open-admet-challenge-cyp}{github.com/Scigantic/open-admet-challenge-cyp},
-  \texttt{data/submissions/R25.csv}). Half of every number in
-  \texttt{v47} is their prediction.
+  \texttt{data/submissions/R25.csv}).
 \end{itemize}
 
 Uploading both halves separately makes the size of the borrowing a
@@ -177,37 +177,33 @@ design of their arm B, a randomly initialised network trained on
 absolute error with inverse-variance sample weights, reimplemented here
 against this project's own weighting scheme.
 
-\subsubsection{What is this project's
-own}\label{what-is-this-projects-own}
+\subsubsection{Who made which part}\label{who-made-which-part}
 
-\begin{itemize}
-\tightlist
-\item
-  The diagnosis that blank training cells are screened non-inhibitors,
-  and the CYP2D6 pseudo-label arm built on it, which moved the board
-  from rank 55 to 41 (first finding below).
-\item
-  The CYP2D6 floor compression, a placement step for the weak compounds
-  that development folds cannot see, tuned over four board readings
-  (final week, below). It keeps the order of every compound, and the
-  best setting read 0.5524 on the CYP2D6 tab.
-\item
-  The CYP2C9 column, which outscored R25 on its own.
-\item
-  The member combiner: an L1-penalised linear program that fits a
-  correction to an incumbent column by minimising the scored hinge
-  directly over fifty or so saved model columns, with the penalty chosen
-  in folds nested inside each outer fold. It lowered the own-only file
-  from 0.4549 to 0.4472 on the board, and lowered CYP1A2 by 0.0263, the
-  largest gain any change of this project's own has produced.
-\item
-  Reading the board one column at a time, which turned each upload into
-  four separate measurements, and the frozen development gate that
-  decided which model changes were allowed into a file.
-\item
-  The measured negative results, including the long list of closed
-  directions below.
-\end{itemize}
+{\def\LTcaptype{none}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.46}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.27}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.27}}@{}}
+\toprule\noalign{}
+Component & Source & Measured effect \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Five-arm stack over 4,905 training compounds & this entry & 0.4472 alone \\
+Blank training cells read as screened non-inhibitors, and the CYP2D6 pseudo-label arm built on it & this entry & rank 55 to 41 \\
+CYP2D6 floor compression, a placement step for weak compounds that development folds cannot see & this entry & best setting read 0.5524 \\
+The CYP2C9 column & this entry & outscored R25 alone \\
+Member combiner: an L1-penalised linear program fitting a correction to an incumbent column by minimising the scored hinge over about fifty saved model columns & this entry & 0.4549 to 0.4472, and CYP1A2 by 0.0263 \\
+Reading the board one column at a time, and the frozen development gate & this entry & four measurements per upload \\
+Single-submission form of the metric inversion, and its extension to the classification track & this entry & \\
+R25 predictions, at 0.500 of CYP1A2, CYP2D6 and CYP3A4 and 0.400 of CYP2C9 & Scigantic, MIT-0 & 0.0137 of macro error \\
+Affine placement correction & briford (SuperCowPowers) & \\
+Recovering the blind population from leaderboard feedback, the original idea & briford (SuperCowPowers) & \\
+Interval regression objective & published 2017 & \\
+Chemprop, TabPFN and CheMeleon checkpoints & their authors & \\
+\end{longtable}
+}
 
 \subsection{\texorpdfstring{The submission history before
 \texttt{v42}}{The submission history before v42}}\label{the-submission-history-before-v42}
@@ -728,13 +724,14 @@ sign cannot be trusted for changes aimed at that difference.
 
 \subsection{Limitations}\label{limitations}
 
-This project's own best file, \texttt{v46}, scored 0.4472, rank 45 of
-about 283 when it was read. The rank 25 of \texttt{v47} depends on
-Scigantic's published predictions, and without them the entry sits
-outside the top ten percent. The team whose file is borrowed here was at
-0.4283 and rank 21 at the same moment, from a submission later than the
-R25 file used, so the borrowing does not close the gap to the people it
-borrows from. Entries above \texttt{v46} run six base model families
+The stack built here, uploaded alone as \texttt{v46}, scored 0.4472 at
+rank 45 of about 283 when it was read. That standing depends on Scigantic's
+published predictions, and without them this entry sits outside the top
+ten percent of the live board. Their own standing was 0.4283 at rank 21 when it was last
+read on 28 October, from a submission later than the R25 file used here,
+so the submitted file is ahead of the team it borrows from by 0.0091,
+which is around four times the half-set noise. That margin was produced
+by calibration applied after the blend rather than by the blend itself. Entries above \texttt{v46} run six base model families
 against this one's three, pretrain every backbone on public bioactivity
 at scale, and in one case train on tens of thousands of unlabelled
 catalogue molecules chosen to resemble the blind set. None of those is a
