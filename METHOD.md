@@ -157,7 +157,7 @@ of known size those over-determine the confusion matrix. Given precision `P`, re
 `R`, accuracy `A` and `N = 750`:
 
 ```
-TP = (N - N*A) / (1/P + 1/R - 1)
+TP = (N - N*A) / (1/P + 1/R - 2)
 FP = TP*(1/P - 1) ;  FN = TP*(1/R - 1) ;  TN = N*A - TP
 ```
 
